@@ -112,9 +112,19 @@ public class UserController {
     public BaseResponse<Integer> updateUser(User user){
         //校验参数是否为空
         if(user==null){
-
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        //
+        //校验用户是否合法
+        Long id = user.getId();
+        if(id <=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //更新用户
+        boolean b = userService.updateById(user);
+        if(!b){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return ResultUtils.success(1);
     }
     @GetMapping("/delete")
     public BaseResponse<Boolean>deleteUser(@RequestBody Long id,HttpServletRequest request){
